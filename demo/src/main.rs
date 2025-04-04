@@ -9,7 +9,7 @@ use std::{
 
 use clap::Parser;
 
-/// Simple program to greet a person
+/// Demonstration of the slow_rs Rust library.
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
