@@ -26,7 +26,7 @@ impl Loris {
     pub(crate) fn spawn(domain: &str, port: &str, use_tls: bool, interval: Duration) -> Loris {
         Loris {
             interval,
-            state: Loris::create_connection(domain, port, use_tls),
+            state: Loris::create_connection(domain, port, use_tls, interval / 2),
         }
     }
 
@@ -91,10 +91,17 @@ impl Loris {
         }
     }
 
-    fn create_connection(domain: &str, port: &str, use_tls: bool) -> LorisState {
+    fn create_connection(
+        domain: &str,
+        port: &str,
+        use_tls: bool,
+        connect_timeout: Duration,
+    ) -> LorisState {
         let mut stream: TcpStream;
 
-        let connect_stream = TcpStream::connect(format!("{domain}:{port}"));
+        let connect_stream =
+            TcpStream::connect_timeout(format!("{domain}:{port}"), connect_timeout);
+
         if let Err(err) = connect_stream {
             return LorisState::Errored(format!("failed to connect to '{domain}:{port}': {err}"));
         } else {
